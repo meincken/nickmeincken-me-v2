@@ -1,108 +1,380 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from "react"
+import PropTypes from "prop-types"
 import { Link, graphql } from "gatsby";
-import { getImage } from "gatsby-plugin-image";
+import { GlobalStyle } from '../shared/global'
+import { color, device } from '../shared/styles'
 
 import Layout from "../components/Layout";
-import Features from "../components/Features";
-import BlogRoll from "../components/BlogRoll";
-import FullWidthImage from "../components/FullWidthImage";
+import Social from '../components/Social'
+import Education from '../components/Education'
+import IndexContract from '../components/IndexContract'
+import Skills from '../components/Skills'
+import BlogRoll from '../components/BlogRoll'
+import { H2, H2alt, Hr } from '../shared/ui-kit'
+import styled from 'styled-components'
+
+const Hero = styled.section`
+  align-items: center;
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  height: 600px;
+  justify-content: center;
+  position: relative;
+  width: 100vw;
+
+  @media ${device.laptop} {
+    height: 100vh;
+    min-height: 600px;
+  }
+`
+
+const Banner = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 auto;
+  max-width: 1040px;
+  padding: 30px 0;
+  text-align: center;
+  width: 85%;
+`
+
+const BannerText = styled.div`
+  width: 100%;
+
+  span {
+    display: inline-block;
+  }
+`
+
+const Title = styled.h1`
+  color: ${color.primary};
+  font-size: 50px;
+  font-weight: 200;
+  letter-spacing: -2px;
+  line-height: 1.2;
+  margin: 0 auto 20px;
+  text-transform: uppercase;
+
+  span {
+    border-bottom: 1px solid ${color.primary};
+  }
+
+  small {
+    color: ${color.lightest};
+    display: block;
+    font-size: 46%;
+    line-height: 1.1;
+    margin-top: 20px;
+  }
+
+  @media ${device.laptop} {
+    font-size: 90px;
+  }
+`
+
+const SubTitle = styled.h2`
+  color: ${color.lightest};
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 0 auto;
+  width: 80%;
+`
+
+const Main = styled.main`
+  align-content: center;
+  background: ${color.darkest};
+  color: ${color.lighter};
+  min-height: 100vh;
+  justify-content: center;
+  overflow: hidden;
+`
+
+const Section = styled.section`
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(1rem, 1fr)
+    [main-start] minmax(0, 104rem) [main-end]
+    minmax(1rem, 1fr) [full-end];
+  grid-gap: 10px;
+  color: #fff;
+  grid-column: main;
+
+  > * {
+    grid-column: main;
+  }
+
+  &.full {
+  }
+
+  &.about-me {
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 0;
+
+    @media ${device.tablet} {
+      height: 100vh;
+      padding: 0;
+    }
+
+    .profile {
+      img {
+        border-radius: 50%;
+        display: block;
+        height: 12rem;
+        margin: 0 auto;
+        width: 12rem;
+      }
+    }
+  }
+
+  &.skills,
+  &.contracts,
+  &.education {
+    background-color: #fff;
+    color: #1e1e1e;
+  }
+
+  &.portfolio {
+    align-items: center;
+    background: rgb(225, 225, 225);
+    min-height: 100vh;
+    padding: 2rem 0;
+    justify-content: center;
+  }
+
+  &.contracts,
+  &.education {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+
+    > div {
+      border-bottom: 0.1rem solid rgb(225, 225, 225);
+      padding-bottom: 6rem;
+    }
+  }
+
+  &.contracts {
+    h3 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      line-height: 1.5;
+    }
+
+    p {
+      font-weight: 200;
+
+      strong {
+        font-weight: 400;
+      }
+    }
+  }
+
+  &.skills {
+    section p {
+      padding-bottom: 2rem;
+    }
+    padding-bottom: 6rem;
+  }
+
+  > div {
+    @media ${device.tablet} {
+      display: grid;
+      grid-template-areas: 'header section';
+      grid-template-columns: 30rem 1fr;
+    }
+
+    header {
+      grid-area: header;
+    }
+
+    section {
+      grid-area: section;
+    }
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    @media ${device.tablet} {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+`
+
+const LinkStyle = styled(Link)`
+  background: ${color.primary};
+  border-radius: 5px;
+  color: ${color.darkest};
+  display: block;
+  margin-top: 6px;
+  padding: 1rem 2rem;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.5s;
+`
+
+const LinkTo = ({ to, title }) => (
+  <LinkStyle to={to} title={title}>
+    {title}
+  </LinkStyle>
+)
+
+const FileLink = styled.a`
+  background: ${color.primary};
+  border-radius: 5px;
+  color: ${color.darkest};
+  display: block;
+  margin-top: 6px;
+  padding: 1rem 2rem;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.5s;
+`;
 
 // eslint-disable-next-line
 export const IndexPageTemplate = ({
+  hero,
   image,
-  title,
-  heading,
-  subheading,
-  mainpitch,
-  description,
-  intro,
+  education,
+  contracts,
+  aboutme,
+  skills,
 }) => {
-  const heroImage = getImage(image) || image;
-
   return (
-    <div>
-      <FullWidthImage img={heroImage} title={title} subheading={subheading} />
-      <section className="section section--gradient">
-        <div className="container">
-          <div className="section">
-            <div className="columns">
-              <div className="column is-10 is-offset-1">
-                <div className="content">
-                  <div className="content">
-                    <div className="tile">
-                      <h1 className="title">{mainpitch.title}</h1>
-                    </div>
-                    <div className="tile">
-                      <h3 className="subtitle">{mainpitch.description}</h3>
-                    </div>
-                  </div>
-                  <div className="columns">
-                    <div className="column is-12">
-                      <h3 className="has-text-weight-semibold is-size-2">
-                        {heading}
-                      </h3>
-                      <p>{description}</p>
-                    </div>
-                  </div>
-                  <Features gridItems={intro.blurbs} />
-                  <div className="columns">
-                    <div className="column is-12 has-text-centered">
-                      <Link className="btn" to="/products">
-                        See all products
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="column is-12">
-                    <h3 className="has-text-weight-semibold is-size-2">
-                      Latest stories
-                    </h3>
-                    <BlogRoll />
-                    <div className="column is-12 has-text-centered">
-                      <Link className="btn" to="/blog">
-                        Read more
-                      </Link>
-                    </div>
-                  </div>
+    <>
+      <GlobalStyle />     
+      <Hero
+        id="home"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
+            !!image.childImageSharp ? image.childImageSharp.fluid.srcWebp : image
+          })`,
+        }}
+      >
+        <Banner>
+          <BannerText>
+            <Title>
+              <span>{hero.heading}</span>
+              <small>{hero.subheading}</small>
+            </Title>
+            <SubTitle>{hero.introduction}</SubTitle>
+            <Hr />
+            <Social />
+          </BannerText>
+        </Banner>
+      </Hero>
+      <Main>
+        <Section id="about" className="about-me">
+          <div className="profile">
+            <img
+              alt="Nick Meincken"
+              src={aboutme.image.publicURL}
+              width="120px"
+              height="120px"
+            />
+            <article>
+              <H2alt title={aboutme.title} />
+              <p>{aboutme.description}</p>
+              <H2alt title="Contact" />
+              <div className="split">
+                <p>nick@meincken.com</p>
+                <div>
+                  <FileLink href={`/exports/nick-meincken-resume.pdf`}>Download Resume PDF</FileLink>
+                  <FileLink href="/nick-meincken-resume.doc">Download Resume DOC</FileLink>
+                  <LinkTo title="Online Resume" to="/resume" />
                 </div>
               </div>
-            </div>
+            </article>
           </div>
-        </div>
-      </section>
-    </div>
+        </Section>
+        <Section id="resume" className="education">
+          <div>
+            <header>
+              <H2 color="light" title={education.title} />
+            </header>
+            <section>
+              <Education educationItems={education.courses} />
+            </section>
+          </div>
+        </Section>
+        <Section id={`contracts`} className="contracts">
+          <div>
+            <header>
+              <H2 color="light" title={contracts.title} />
+            </header>
+            <section>
+              <IndexContract />
+            </section>
+          </div>
+        </Section>
+        <Section id={`skills`} className="skills">
+          <div>
+            <header>
+              <H2 color="light" title={skills.title} />
+            </header>
+            <section>
+              <p>{skills.description}</p>
+              <Skills skillItems={skills.skillset} />
+            </section>
+          </div>
+        </Section>
+        <Section id="portfolio" className="portfolio">
+          <section>
+            <H2 color="center" title="Check out some of my previous works" />
+            <BlogRoll />
+          </section>
+        </Section>
+      </Main>
+    </>
   );
 };
 
 IndexPageTemplate.propTypes = {
+  hero: PropTypes.object,
   image: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   title: PropTypes.string,
   heading: PropTypes.string,
   subheading: PropTypes.string,
-  mainpitch: PropTypes.object,
+  introduction: PropTypes.string,
+  aboutme: PropTypes.object,
   description: PropTypes.string,
-  intro: PropTypes.shape({
-    blurbs: PropTypes.array,
+  education: PropTypes.shape({
+    courses: PropTypes.array,
   }),
-};
+  contracts: PropTypes.shape({
+    positions: PropTypes.array,
+  }),
+  skills: PropTypes.shape({
+    skillset: PropTypes.array,
+  }),
+}
 
 const IndexPage = ({ data }) => {
-  const { frontmatter } = data.markdownRemark;
+  const { frontmatter } = data.markdownRemark
 
   return (
     <Layout>
       <IndexPageTemplate
-        image={frontmatter.image}
+        hero={frontmatter.hero}
+        image={frontmatter.hero.image}
         title={frontmatter.title}
         heading={frontmatter.heading}
         subheading={frontmatter.subheading}
-        mainpitch={frontmatter.mainpitch}
+        introduction={frontmatter.introduction}
+        education={frontmatter.education}
+        contracts={frontmatter.contracts}
+        aboutme={frontmatter.aboutme}
         description={frontmatter.description}
         intro={frontmatter.intro}
+        skills={frontmatter.skills}
       />
     </Layout>
-  );
-};
+  )
+}
 
 IndexPage.propTypes = {
   data: PropTypes.shape({
@@ -118,30 +390,43 @@ export const pageQuery = graphql`
   query IndexPageTemplate {
     markdownRemark(frontmatter: { templateKey: { eq: "index-page" } }) {
       frontmatter {
-        title
-        image {
-          childImageSharp {
-            gatsbyImageData(quality: 100, layout: FULL_WIDTH)
+        hero {
+          image {
+            childImageSharp {
+              fluid(maxWidth: 1680, webpQuality: 100) {
+                srcWebp
+              }
+            }
           }
+          heading
+          subheading
+          introduction
         }
-        heading
-        subheading
-        mainpitch {
+        aboutme {
+          image {
+            publicURL
+          }
           title
           description
         }
-        description
-        intro {
-          blurbs {
-            image {
-              childImageSharp {
-                gatsbyImageData(width: 240, quality: 64, layout: CONSTRAINED)
-              }
-            }
-            text
+        education {
+          title
+          courses {
+            title
+            course
+            year
           }
-          heading
+        }
+        contracts {
+          title
+        }
+        skills {
+          title
           description
+          skillset {
+            name
+            level
+          }
         }
       }
     }

@@ -1,66 +1,89 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link, graphql, StaticQuery } from 'gatsby'
-import PreviewCompatibleImage from './PreviewCompatibleImage'
+import { graphql, StaticQuery } from 'gatsby'
+import styled from 'styled-components'
 
+const Article = styled.article`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 215px;
+  position: relative;
+  background: rgb(30, 30, 30);
+  overflow: hidden;
+  transition: all 0.3s ease-in-out 0s;
 
-const BlogRollTemplate = (props) => {
-  
-  const { edges: posts } = props.data.allMarkdownRemark;
+  .overlay {
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    padding: 1.8rem;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    transition: opacity 0.3s ease-in-out 0s;
 
-  return (
-    <div className="columns is-multiline">
-      {posts &&
-        posts.map(({ node: post }) => (
-          <div className="is-parent column is-6" key={post.id}>
-            <article
-              className={`blog-list-item tile is-child box notification ${
-                post.frontmatter.featuredpost ? 'is-featured' : ''
-              }`}
-            >
-              <header>
-                {post?.frontmatter?.featuredimage && (
-                  <div className="featured-thumbnail">
-                    <PreviewCompatibleImage
-                      imageInfo={{
-                        image: post.frontmatter.featuredimage,
-                        alt: `featured image thumbnail for post ${post.frontmatter.title}`,
-                        width:
-                          post.frontmatter.featuredimage.childImageSharp
-                            .gatsbyImageData.width,
-                        height:
-                          post.frontmatter.featuredimage.childImageSharp
-                            .gatsbyImageData.height,
-                      }}
-                    />
-                  </div>
-                ) }
-                <p className="post-meta">
-                  <Link
-                    className="title has-text-primary is-size-4"
-                    to={post.fields.slug}
-                  >
-                    {post.frontmatter.title}
-                  </Link>
-                  <span> &bull; </span>
-                  <span className="subtitle is-size-5 is-block">
-                    {post.frontmatter.date}
-                  </span>
-                </p>
-              </header>
-              <p>
-                {post.excerpt}
-                <br />
-                <br />
-                <Link className="button" to={post.fields.slug}>
-                  Keep Reading →
-                </Link>
-              </p>
-            </article>
-          </div>
-        ))}
-    </div>
-  )
+    .post-meta {
+      text-align: center;
+    }
+  }
+
+  &:hover {
+    .overlay {
+      opacity: 1;
+    }
+  }
+`
+
+const Section = styled.section`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+  row-gap: 1rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+`
+
+class BlogRoll extends React.Component {
+  render() {
+    const { data } = this.props
+    const { edges: posts } = data.allMarkdownRemark
+
+    return (
+      <>
+        <Section>
+          {posts &&
+            posts.map(({ node: post }) => (
+              <Article key={post.id}>
+                <img
+                  alt={post.frontmatter.featuredimage.name}
+                  src={
+                    post.frontmatter.featuredimage.childImageSharp.fluid.srcWebp
+                  }
+                  width={`${post.frontmatter.featuredimage.childImageSharp.fluid.presentationWidth}px`}
+                  height={`${post.frontmatter.featuredimage.childImageSharp.fluid.presentationHeight}px`}
+                />
+                <div className="overlay">
+                  <p>{post.excerpt}</p>
+                  <p className="post-meta">
+                    <a
+                      rel="noreferrer"
+                      target="_blank"
+                      href={post.frontmatter.url}
+                    >
+                      {post.frontmatter.title}
+                    </a>
+                  </p>
+                </div>
+              </Article>
+            ))}
+        </Section>
+      </>
+    )
+  }
 }
 
 BlogRoll.propTypes = {
@@ -71,45 +94,42 @@ BlogRoll.propTypes = {
   }),
 }
 
-
-export default function BlogRoll() {
-  return (
-    <StaticQuery
-      query={graphql`
-        query BlogRollQuery {
-          allMarkdownRemark(
-            sort: { order: DESC, fields: [frontmatter___date] }
-            filter: { frontmatter: { templateKey: { eq: "blog-post" } } }
-          ) {
-            edges {
-              node {
-                excerpt(pruneLength: 400)
-                id
-                fields {
-                  slug
-                }
-                frontmatter {
-                  title
-                  templateKey
-                  date(formatString: "MMMM DD, YYYY")
-                  featuredpost
-                  featuredimage {
-                    childImageSharp {
-                      gatsbyImageData(
-                        width: 120
-                        quality: 100
-                        layout: CONSTRAINED
-                      )
-
+export default () => (
+  <StaticQuery
+    query={graphql`
+      query BlogRollQuery {
+        allMarkdownRemark(
+          sort: { order: DESC, fields: [frontmatter___date] }
+          filter: { frontmatter: { templateKey: { eq: "blog-post" } } }
+        ) {
+          edges {
+            node {
+              excerpt(pruneLength: 400)
+              id
+              fields {
+                slug
+              }
+              frontmatter {
+                title
+                templateKey
+                url
+                date(formatString: "MMMM DD, YYYY")
+                featuredimage {
+                  childImageSharp {
+                    fluid {
+                      srcWebp
+                      presentationHeight
+                      presentationWidth
                     }
                   }
+                  name
                 }
               }
             }
           }
         }
-      `}
-      render={(data, count) => <BlogRollTemplate data={data} count={count} />}
-    />
-  );
-}
+      }
+    `}
+    render={(data, count) => <BlogRoll data={data} count={count} />}
+  />
+)

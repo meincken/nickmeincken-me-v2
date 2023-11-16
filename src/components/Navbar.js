@@ -1,79 +1,72 @@
-import React, { useState } from "react";
-import { Link } from "gatsby";
-import github from "../img/github-icon.svg";
-import logo from "../img/logo.svg";
+import React from 'react'
+import { Link } from 'react-scroll'
+import styled from 'styled-components'
+
+const Nav = styled.nav`
+  position: fixed;
+  z-index: 1;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  border-bottom: 1px solid #a9cc17;
+`
+
+const LinkTo = styled(Link)`
+  text-decoration: none;
+  text-transform: uppercase;
+  padding: 0.8rem 1.3rem;
+  display: inline-block;
+  cursor: pointer;
+`
 
 const Navbar = () => {
-  const [isActive, setIsActive] = useState(false);
-
   return (
-    <nav
+    <Nav
       className="navbar is-transparent"
       role="navigation"
       aria-label="main-navigation"
     >
-      <div className="container">
-        <div className="navbar-brand">
-          <Link to="/" className="navbar-item" title="Logo">
-            <img src={logo} alt="Kaldi" style={{ width: "88px" }} />
-          </Link>
-          {/* Hamburger menu */}
-          <button
-            className={`navbar-burger burger ${isActive && "is-active"}`}
-            aria-expanded={isActive}
-            onClick={() => setIsActive(!isActive)}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
-        </div>
-        <ul id="navMenu" className={` navbar-start has-text-centered navbar-menu ${isActive && "is-active"}`}>
-            {/* TODO: inline override of padding is a result of refactoring
-                to a ul for accessibilty purposes, would like to see a css
-                re-write that makes this unneccesary.
-             */}
-            <li className="navbar-item" style={{padding: "0px"}}>
-              <Link className="navbar-item" to="/about">
-                About
-              </Link>
-            </li>
-            <li className="navbar-item" style={{padding: "0px"}}>
-            <Link className="navbar-item" to="/products">
-              Products
-            </Link>
-            </li>
-            <li className="navbar-item" style={{padding: "0px"}}>
-            <Link className="navbar-item" to="/blog">
-              Blog
-            </Link>
-            </li>
-            <li className="navbar-item" style={{padding: "0px"}}>
-            <Link className="navbar-item" to="/contact">
-              Contact
-            </Link>
-            </li>
-            <li className="navbar-item" style={{padding: "0px"}}>
-            <Link className="navbar-item" to="/contact/examples">
-              Form Examples
-            </Link>
-            </li>
-          <li className="navbar-end has-text-centered">
-            <a
-              className="navbar-item"
-              href="https://github.com/netlify-templates/gatsby-starter-netlify-cms"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className="icon">
-                <img src={github} alt="Github" />
-              </span>
-            </a>
-          </li>
-        </ul>
+      <div>
+        <NavLink
+          className="navbar-item"
+          target="home"
+          title="Home"
+          onClick={e => this.handleToggle(e)}
+        />
+        <NavLink
+          className="navbar-item"
+          target="about"
+          title="About"
+          onClick={e => this.handleToggle(e)}
+        />
+        <NavLink
+          className="navbar-item"
+          target="resume"
+          title="Resume"
+          onClick={e => this.handleToggle(e)}
+        />
+        <NavLink
+          className="navbar-item"
+          target="portfolio"
+          title="Works"
+          onClick={e => this.handleToggle(e)}
+        />
       </div>
-    </nav>
-  );
-};
+    </Nav>
+  )
+}
 
-export default Navbar;
+const NavLink = ({ target, title }) => (
+  <LinkTo
+    activeClass="current"
+    to={target}
+    spy={true}
+    smooth={true}
+    offset={0}
+    duration={900}
+  >
+    {title}
+  </LinkTo>
+)
+
+export default Navbar
