@@ -198,7 +198,7 @@ export const ResumePageTemplate = ({
         <div className={`contact-info`}>
           <a href="https://nickmeincken.me">nickmeincken.me</a>
           <p>Surbiton, Surrey UK</p>
-          <a href="tel:+44 7496 084977">+44 7496 084977</a>
+          <a href="tel:+44 7967 961441">+44 7967 961441</a>
           <a href="mailto:nick@meincken.com">nick@meincken.com</a>
           <a href="https://github.com/meincken">Meincken GitHub</a>
         </div>
