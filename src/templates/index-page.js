@@ -283,8 +283,8 @@ export const IndexPageTemplate = ({
               <div className="split">
                 <p>nick@meincken.com</p>
                 <div>
-                  <FileLink href={`/exports/nick-meincken-resume.pdf`}>Download Resume PDF</FileLink>
-                  <FileLink href="/nick-meincken-resume.doc">Download Resume DOC</FileLink>
+                  <FileLink target="_blank" href={`/nick-meincken-resume.pdf`}>Download Resume PDF</FileLink>
+                  <FileLink href="/nick-meincken-resume.docx">Download Resume DOC</FileLink>
                   <LinkTo title="Online Resume" to="/resume" />
                 </div>
               </div>

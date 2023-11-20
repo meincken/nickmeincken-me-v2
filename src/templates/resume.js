@@ -187,7 +187,7 @@ export const ResumePageTemplate = ({
         <Link className={`btn`} to={`/`}>
           Home
         </Link>
-        <a className={`btn print`} href={`/exports/nick-meincken-resume.pdf`}>
+        <a target='_blank' className={`btn print`} href={`/nick-meincken-resume.pdf`}>
           Print
         </a>
       </CVLinks>

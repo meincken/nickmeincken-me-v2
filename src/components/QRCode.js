@@ -2,12 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 
 const Code = styled.div`
+  background-color: #fff;
   height: 10rem;
 
   svg {
     max-width: 10rem;
     height: auto;
-    color: white;
+    color: #000;
   }
 `;
 
