@@ -10,6 +10,7 @@ import Education from '../components/Education'
 import IndexContract from '../components/IndexContract'
 import Skills from '../components/Skills'
 import BlogRoll from '../components/BlogRoll'
+import PreviewCompatibleImage from "../components/PreviewCompatibleImage"; 
 import { H2, H2alt, Hr } from '../shared/ui-kit'
 import styled from 'styled-components'
 
@@ -270,12 +271,7 @@ export const IndexPageTemplate = ({
       <Main>
         <Section id="about" className="about-me">
           <div className="profile">
-            <img
-              alt="Nick Meincken"
-              src={aboutme.image.publicURL}
-              width="120px"
-              height="120px"
-            />
+            <PreviewCompatibleImage imageInfo={aboutme} />
             <article>
               <H2alt title={aboutme.title} />
               <p>{aboutme.description}</p>
@@ -340,7 +336,11 @@ IndexPageTemplate.propTypes = {
   heading: PropTypes.string,
   subheading: PropTypes.string,
   introduction: PropTypes.string,
-  aboutme: PropTypes.object,
+  aboutme: PropTypes.shape({
+    title: PropTypes.string,
+    description: PropTypes.string,
+    image: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  }),
   description: PropTypes.string,
   education: PropTypes.shape({
     courses: PropTypes.array,
@@ -405,6 +405,9 @@ export const pageQuery = graphql`
         aboutme {
           image {
             publicURL
+            childImageSharp {
+              gatsbyImageData(quality: 100, width: 120, height: 120, layout: CONSTRAINED)
+            }
           }
           title
           description
